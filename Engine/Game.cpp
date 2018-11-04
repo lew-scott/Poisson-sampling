@@ -20,6 +20,8 @@
  ******************************************************************************************/
 #include "MainWindow.h"
 #include "Game.h"
+#include "Tile.h"
+
 
 Game::Game( MainWindow& wnd )
 	:
@@ -38,8 +40,74 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
+
+	
+	if (MoveAllowed == true)
+	{
+		if (wnd.kbd.KeyIsPressed(VK_LEFT))
+		{
+			PosX -= 20;
+		}
+		if (wnd.kbd.KeyIsPressed(VK_RIGHT))
+		{
+			PosX += 20;
+		}
+		if (wnd.kbd.KeyIsPressed(VK_UP))
+		{
+			PosY -= 20;
+		}
+		if (wnd.kbd.KeyIsPressed(VK_DOWN))
+		{
+			PosY += 20;
+		}
+		MoveAllowed = false;
+		MoveClock = 0;
+	}
+	if (MoveClock == MoveTimer)
+	{
+		MoveAllowed = true;
+	}
+
+	MoveClock += 1;
+	FlashTime += 1;
+	if (FlashTime == FlashClock)
+	{
+		Flash = false;
+	}
+	else if(FlashTime == FlashClock * 2)
+	{
+		Flash = true;
+		FlashTime = 0;
+	}
+	
 }
 
 void Game::ComposeFrame()
 {
+	Tile::CorRDPipe(x, y, gfx);
+	Tile::TDownPipe(x + 40, y, gfx);
+	Tile::FourWayPipe(x + 40, y + 40, gfx);
+	Tile::TUpPipe(x + 40, y + 80, gfx);
+	Tile::TRightPipe(x, y + 40, gfx);
+	Tile::TLeftPipe(x + 80, y + 40, gfx);
+	Tile::CorLDPipe(x + 80, y, gfx);
+	Tile::CorRUPipe(x, y + 80, gfx);
+	Tile::CorLUPipe(x + 80, y + 80, gfx);
+	Tile::HorzPipe(x + 20, y, gfx);
+	Tile::HorzPipe(x + 60, y, gfx);
+	Tile::HorzPipe(x + 20, y + 40, gfx);
+	Tile::HorzPipe(x + 60, y + 40, gfx);
+	Tile::HorzPipe(x + 20, y + 80, gfx);
+	Tile::HorzPipe(x + 60, y + 80, gfx);
+	Tile::VertPipe(x, y + 20, gfx);
+	Tile::VertPipe(x, y + 60, gfx);
+	Tile::VertPipe(x + 40, y + 20, gfx);
+	Tile::VertPipe(x + 40, y + 60, gfx);
+	Tile::VertPipe(x + 80, y + 20, gfx);
+	Tile::VertPipe(x + 80, y + 60, gfx);
+
+	if (Flash == true)
+	{
+		Tile::DrawSquare(PosX, PosY, gfx);
+	}
 }
