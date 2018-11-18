@@ -13,6 +13,7 @@ class Disc
 	public:
 		Tile(float width, float height);
 		bool containsPoint();
+		const Vec2& GetPoint() const;
 
 	private:
 		float width;

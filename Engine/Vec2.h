@@ -13,6 +13,7 @@ public:
 	Vec2& operator-=( const Vec2& rhs );
 	float GetLength() const;
 	float GetLengthSq() const;
+	float GetLengthSq(const Vec2& vec1, const Vec2& vec2) const;
 	Vec2& Normalize();
 	Vec2 GetNormalized() const;
 public:

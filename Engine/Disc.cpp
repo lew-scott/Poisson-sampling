@@ -13,17 +13,27 @@ void Disc::NeighbourTiles(const Vei2 & GridPos)
 
 	bool PointOkay = true;
 
-	for (Vei2 gridPos = { xStart,yStart }; gridPos.y <= yEnd; gridPos.y++)
+	for (Vei2 cell = { xStart,yStart }; cell.y <= yEnd; cell.y++)
 	{
-		for (gridPos.x = xStart; gridPos.x <= xEnd; gridPos.x++)
+		for (cell.x = xStart; cell.x <= xEnd; cell.x++)
 		{
-			if (gridPos.x == xStart && gridPos.y == yStart) // check not cell being checked
+			if (GridPos.x == cell.x && GridPos.y == cell.y) // check not cell being checked
 			{
 
 			}
 			else
 			{
-				AtTile({ xStart,yStart }).containsPoint();
+				if (AtTile({ cell.x,cell.y }).containsPoint() == true)
+				{
+					Vec2 vec1 = AtTile(GridPos).GetPoint();
+					Vec2 vec2 = AtTile({ cell.x, cell.y }).GetPoint();
+					Vec2 newVec = vec1 - vec2;
+					if (newVec.GetLengthSq() < minDist * minDist)
+					{
+					PointOkay = false;
+					}
+
+				}
 			}
 			
 		}
@@ -51,4 +61,9 @@ Disc::Tile::Tile(float width, float height)
 bool Disc::Tile::containsPoint()
 {
 	return hasPoint;
+}
+
+const Vec2& Disc::Tile::GetPoint() const
+{
+	return pointAt;
 }
