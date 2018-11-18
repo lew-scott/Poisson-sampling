@@ -23,7 +23,6 @@
 #include "Keyboard.h"
 #include "Mouse.h"
 #include "Graphics.h"
-#include "Tile.h"
 
 class Game
 {
@@ -43,15 +42,5 @@ private:
 	Graphics gfx;
 	/********************************/
 	/*  User Variables              */
-	int x = 100; 
-	int y = 100;
-	int PosX = 100;
-	int PosY = 100;
-	int FlashTime = 0;
-	int FlashClock = 20;
-	bool Flash = true;
-	int MoveTimer = 10;
-	int MoveClock = 0;
-	bool MoveAllowed = true;
 	/********************************/
 };
