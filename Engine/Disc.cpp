@@ -1,10 +1,12 @@
 #include "Disc.h"
 #include <algorithm>
+#include <cmath>
+#include <random>
 
 
 
 
-void Disc::NeighbourTiles(const Vei2 & GridPos)
+bool Disc::CheckNeighbourPoints(const Vei2 & GridPos)
 {
 	const int xStart = std::max(0, GridPos.x - 1);
 	const int yStart = std::max(0, GridPos.y - 1);
@@ -30,7 +32,7 @@ void Disc::NeighbourTiles(const Vei2 & GridPos)
 					Vec2 newVec = vec1 - vec2;
 					if (newVec.GetLengthSq() < minDist * minDist)
 					{
-					PointOkay = false;
+						PointOkay = false;
 					}
 
 				}
@@ -38,8 +40,35 @@ void Disc::NeighbourTiles(const Vei2 & GridPos)
 			
 		}
 	}
-
+	return PointOkay;
 }
+
+Vec2 Disc::GetNewPosition(const Vec2 & GridPos)
+{
+	Vec2 newPos;
+	std::random_device rd;
+	std::mt19937 rng(rd());
+	std::uniform_real_distribution<float> xDist(0, 1);
+	float r1 = xDist(rng);
+	float r2 = xDist(rng);
+
+	float radius = minDist * (1 + r1);
+	float angle = 2 * 3.1415 * r2;
+
+	float newX = GridPos.x + radius * cos(angle);
+	float newY = GridPos.y + radius * sin(angle);
+
+	return newPos = { newX,newY };
+}
+
+Vec2 Disc::PosToGrid(const Vec2 & Pos)
+{
+		Vec2 GridPos = { Pos.x / CellSize,
+					     Pos.y / CellSize };
+
+	return GridPos;
+}
+
 
 const Disc::Tile& Disc::AtTile(const Vei2 & gridPos) const
 {
@@ -51,12 +80,7 @@ Disc::Tile& Disc::AtTile(const Vei2 & gridPos)
 	return field[gridPos.y * width + gridPos.x];
 }
 
-Disc::Tile::Tile(float width, float height)
-	:
-	width(width),
-	height(height)
-{
-}
+
 
 bool Disc::Tile::containsPoint()
 {
@@ -66,4 +90,10 @@ bool Disc::Tile::containsPoint()
 const Vec2& Disc::Tile::GetPoint() const
 {
 	return pointAt;
+}
+
+Vec2 & Disc::Tile::SetPoint(const Vec2& point)
+{
+	hasPoint = true;
+	return pointAt = point;
 }
