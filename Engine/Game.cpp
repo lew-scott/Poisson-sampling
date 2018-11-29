@@ -25,7 +25,8 @@
 Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
-	gfx( wnd )
+	gfx( wnd ),
+	disc(gfx)
 {
 }
 
@@ -39,9 +40,15 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
-
+	if (setpoint == false)
+	{
+		disc.RunDiscSeperation();
+		setpoint = true;
+	}
 }
 
 void Game::ComposeFrame()
 {
+	disc.DrawGrid();
+	gfx.DrawRectDim(200, 450, disc.GetMinDisc(), 5, Colors::Blue);
 }

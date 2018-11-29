@@ -240,6 +240,76 @@ Graphics::Graphics( HWNDKey& key )
 		_aligned_malloc( sizeof( Color ) * Graphics::ScreenWidth * Graphics::ScreenHeight,16u ) );
 }
 
+void Graphics::DrawRect(int x0, int y0, int x1, int y1, Color c)
+{
+	if (x0 > x1)
+	{
+		std::swap(x0, x1);
+	}
+	if (y0 > y1)
+	{
+		std::swap(y0, y1);
+	}
+
+	for (int y = y0; y < y1; ++y)
+	{
+		for (int x = x0; x < x1; ++x)
+		{
+			PutPixel(x, y, c);
+		}
+	}
+}
+
+void Graphics::DrawBoxLines(int x0, int y0, int x1, int y1, Color c)
+{
+	if (x0 > x1)
+	{
+		std::swap(x0, x1);
+	}
+	if (y0 > y1)
+	{
+		std::swap(y0, y1);
+	}
+
+	for (int x = x0; x < x1; x++) // top line
+	{
+		PutPixel(x, y0, c);
+	}
+	for (int x = x0; x < x1; x++) // bottom line
+	{
+		PutPixel(x, y1, c);
+	}
+	for (int y = y0; y < y1; y++) // left line
+	{
+		PutPixel(x0, y, c);
+	}
+	for (int y = y0; y < y1; y++) // right line
+	{
+		PutPixel(x1, y, c);
+	}
+}
+
+void Graphics::DrawCircleWithPoint(int x, int y, int radius, Color c)
+{
+	const int rad_sq = radius * radius;
+	for (int y_loop = y - radius; y_loop < y + radius + 1; y_loop++)
+	{
+		for (int x_loop = x - radius; x_loop < x + radius + 1; x_loop++)
+		{
+			const int x_diff = x - x_loop;
+			const int y_diff = y - y_loop;
+			if (x_diff * x_diff + y_diff * y_diff <= rad_sq)
+			{
+				PutPixel(x_loop, y_loop, c);
+			}
+		}
+	}
+	PutPixel(x, y, c);
+}
+
+
+
+
 Graphics::~Graphics()
 {
 	// free sysbuffer memory (aligned free)

@@ -48,11 +48,6 @@ float Vec2::GetLengthSq() const
 	return x * x + y * y;
 }
 
-float Vec2::GetLengthSq(const Vec2& vec1, const Vec2 & vec2) const
-{
-	return ((vec1.x - vec2.x) * (vec1.x - vec2.x))
-		 + ((vec1.y - vec2.y) * (vec1.y - vec2.y));
-}
 
 Vec2& Vec2::Normalize()
 {
