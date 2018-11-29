@@ -16,11 +16,14 @@ Disc::Disc(Graphics & gfx)
 void Disc::RunDiscSeperation()
 {
 	SetFirstPoint();
-	for (int i = 0; i < 5; i++)
+	int Attempts = 0; // k
+	bool pointokay = false;
+	
+	while (pointokay == false && Attempts < 30)
 	{
 		Vec2 newpos = GetNewPosition();
 		Vei2 gridpos = PosToGrid(newpos);
-		bool pointokay = CheckNeighbourPoints(gridpos, newpos);
+		pointokay = CheckNeighbourPoints(gridpos, newpos);
 		if (pointokay == true)
 		{
 			ActiveList.push_back(newpos);
@@ -28,7 +31,9 @@ void Disc::RunDiscSeperation()
 			ActiveList.erase(ActiveList.end() - 1);
 		}
 
+		Attempts++;
 	}
+
 }
 
 void Disc::SetFirstPoint()
@@ -97,15 +102,14 @@ Vec2 Disc::GetNewPosition()
 	Vei2 Cell = PosToGrid(oldPos);
 	float radius = minDist * (1 + r1);
 	float angle;
-	float Attempts = 0;
 
 		while ((newPos.x < TopLeft.x || newPos.y < TopLeft.y
 			|| newPos.x > TopLeft.x + width * CellSize
-			|| newPos.y > TopLeft.y + width * CellSize) || Attempts < 30)
+			|| newPos.y > TopLeft.y + width * CellSize))
 		{
 			angle = CalcAngle(0.0f, 360.0f);
 			newPos = { oldPos.x + radius * cos(angle), oldPos.y + radius * sin(angle) };
-			Attempts++;
+			
 		}
 
 	return newPos;
@@ -144,7 +148,7 @@ float Disc::CalcAngle(float x, float y)
 	std::uniform_real_distribution<float> Dist(x, y);
 
 	float rand = Dist(rng);
-	float angle = 2 * 3.1415f * rand * 0.0174533f;
+	float angle = 2 * 3.1415f * rand * 0.0174533f; // 1 deg = 0.0174533 Rad
 
 	return angle;
 }
@@ -187,6 +191,6 @@ void Disc::Tile::drawPoint(Graphics & gfx, const Vei2& offset)
 {
 	if (hasPoint == true)
 	{
-		gfx.DrawCircleWithPoint(int(offset.x + Pos.x), int(offset.y + Pos.y), 3, Colors::Gray);
+		gfx.DrawCircleWithPoint(int(offset.x + Pos.x), int(offset.y + Pos.y), 2, Colors::Gray);
 	}
 }
