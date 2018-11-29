@@ -62,6 +62,13 @@ public:
 	{
 		DrawRect(x0, y0, x0 + width, y0 + height, c);
 	}
+	void DrawRectCentered(int x, int y, int width, int height, Color c)
+	{
+		int halfwidth = int(width / 2);
+		int halfheight = int(height / 2);
+
+		DrawRectDim(x - halfwidth, y - halfheight, width, height, c);
+	}
 	void DrawBoxLines(int x0, int y0, int x1, int y1, Color c);
 	void DrawBoxDim(int x0, int y0, int width, int height, Color c)
 	{

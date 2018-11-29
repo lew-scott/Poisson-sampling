@@ -50,5 +50,5 @@ void Game::UpdateModel()
 void Game::ComposeFrame()
 {
 	disc.DrawGrid();
-	gfx.DrawRectDim(200, 450, disc.GetMinDisc(), 5, Colors::Blue);
+	gfx.DrawRectCentered(400, 580, disc.GetMinDisc(), 5, Colors::Blue);
 }

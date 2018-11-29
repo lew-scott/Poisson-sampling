@@ -41,9 +41,9 @@ public:
 	bool GridFull();
 
 private:
-	static constexpr int width = 20;
-	static constexpr int height = 20;
-	static constexpr int minDist = 30;
+	static constexpr int width = 24;
+	static constexpr int height = 18;
+	static constexpr int minDist = 40;
 	static constexpr int newPoints = 10;
 	static constexpr int k_tries = 30;
 	int PointToBeDeleted = -1;
@@ -54,6 +54,6 @@ private:
 	Vei2 GridPos;
 	std::vector<Vec2> ActiveList;
 	std::vector<Vec2> PointList;
-	Vei2 TopLeft = { 50,50 };
+	Vei2 TopLeft = { 60,50 };
 	Graphics& gfx;
 };

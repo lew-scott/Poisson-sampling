@@ -125,7 +125,7 @@ Vei2 Disc::PosToGrid(const Vec2 & Pos)
 
 void Disc::DrawGrid()
 {
-	for (GridPos.y = 0; GridPos.y < width; GridPos.y++)
+	for (GridPos.y = 0; GridPos.y < height; GridPos.y++)
 	{
 		for (GridPos.x = 0; GridPos.x < width; GridPos.x++)
 		{
@@ -200,13 +200,14 @@ Vec2 & Disc::Tile::SetPoint(const Vec2& point)
 
 void Disc::Tile::drawCell(const Vei2& gridPos, Graphics& gfx, const Vei2& offset)
 {
-	gfx.DrawBoxDim(int(offset.x + gridPos.x * CellSize), int(offset.y + gridPos.y * CellSize), int(CellSize), int(CellSize), Colors::LightGray);
+	gfx.DrawBoxDim(int(offset.x + gridPos.x * CellSize), int(offset.y + gridPos.y * CellSize), int(CellSize), int(CellSize), { 50,50,50 });
 }
 
 void Disc::Tile::drawPoint(Graphics & gfx, const Vei2& offset)
 {
 	if (hasPoint == true)
 	{
-		gfx.DrawCircleWithPoint(int(offset.x + Pos.x), int(offset.y + Pos.y), 4, Colors::Gray);
+
+		gfx.DrawCircleWithPoint(int(offset.x + Pos.x), int(offset.y + Pos.y), 4, { 200,0,200 });
 	}
 }
