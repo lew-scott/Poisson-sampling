@@ -2,11 +2,51 @@
 #include <algorithm>
 #include <cmath>
 #include <random>
+#include "Graphics.h"
 
 
 
 
-bool Disc::CheckNeighbourPoints(const Vei2 & GridPos)
+Disc::Disc(Graphics & gfx)
+	:
+	gfx(gfx)
+{
+}
+
+void Disc::RunDiscSeperation()
+{
+	SetFirstPoint();
+	for (int i = 0; i < 5; i++)
+	{
+		Vec2 newpos = GetNewPosition();
+		Vei2 gridpos = PosToGrid(newpos);
+		bool pointokay = CheckNeighbourPoints(gridpos, newpos);
+		if (pointokay == true)
+		{
+			ActiveList.push_back(newpos);
+			AtTile(gridpos).SetPoint(newpos);
+			ActiveList.erase(ActiveList.end() - 1);
+		}
+
+	}
+}
+
+void Disc::SetFirstPoint()
+{
+	Vec2 Pos;
+	Vei2 gridpos;
+	std::random_device rd;
+	std::mt19937 rng(rd());
+	std::uniform_real_distribution<float> xDist(0, width * CellSize);
+	std::uniform_real_distribution<float> yDist(0, height * CellSize);
+	
+	Pos = { xDist(rng), yDist(rng) };
+	gridpos = PosToGrid(Pos);
+	AtTile(gridpos).SetPoint(Pos);
+	ActiveList.push_back(Pos);
+}
+
+bool Disc::CheckNeighbourPoints(const Vei2 & GridPos, const Vec2& TempPos)
 {
 	const int xStart = std::max(0, GridPos.x - 1);
 	const int yStart = std::max(0, GridPos.y - 1);
@@ -27,10 +67,10 @@ bool Disc::CheckNeighbourPoints(const Vei2 & GridPos)
 			{
 				if (AtTile({ cell.x,cell.y }).containsPoint() == true)
 				{
-					Vec2 vec1 = AtTile(GridPos).GetPoint();
-					Vec2 vec2 = AtTile({ cell.x, cell.y }).GetPoint();
-					Vec2 newVec = vec1 - vec2;
-					if (newVec.GetLengthSq() < minDist * minDist)
+					
+					Vec2 TestLenght = AtTile({ cell.x, cell.y }).GetPoint() - TempPos;
+					
+					if (TestLenght.GetLengthSq() < minDist * minDist)
 					{
 						PointOkay = false;
 					}
@@ -43,30 +83,120 @@ bool Disc::CheckNeighbourPoints(const Vei2 & GridPos)
 	return PointOkay;
 }
 
-Vec2 Disc::GetNewPosition(const Vec2 & GridPos)
+Vec2 Disc::GetNewPosition()
 {
-	Vec2 newPos;
 	std::random_device rd;
 	std::mt19937 rng(rd());
 	std::uniform_real_distribution<float> xDist(0, 1);
+	std::uniform_int_distribution<int> element(0, int(ActiveList.size() - 1));
+
 	float r1 = xDist(rng);
-	float r2 = xDist(rng);
-
+	int i = element(rng);
+	Vec2 oldPos = ActiveList[i];
+	Vec2 newPos = {0,0};
+	Vei2 Cell = PosToGrid(oldPos);
 	float radius = minDist * (1 + r1);
-	float angle = 2 * 3.1415 * r2;
+	float angle;
 
-	float newX = GridPos.x + radius * cos(angle);
-	float newY = GridPos.y + radius * sin(angle);
+	if(Cell.x == 0)
+	{ 
+		if (Cell.y == 0)
+		{
+			angle = CalcAngle(0.25f, 0.5f);
+			newPos = { oldPos.x + radius * cos(angle), oldPos.y + radius * sin(angle) };
+		}
+		else if (Cell.y == height - 1)
+		{
+			angle = CalcAngle(0.0f, 0.25f);
+			newPos = { oldPos.x + radius * cos(angle), oldPos.y + radius * sin(angle) };
+		}
+		else
+		{
+			angle = CalcAngle(0.0f, 0.5f);
+			newPos = { oldPos.x + radius * cos(angle), oldPos.y + radius * sin(angle) };
+		}
+	}
 
-	return newPos = { newX,newY };
+	else if (Cell.y == width - 1)
+	{
+		if (Cell.y == 0)
+		{
+			angle = CalcAngle(0.5f, 0.75f);
+			newPos = { oldPos.x + radius * cos(angle), oldPos.y + radius * sin(angle) };
+		}
+		else if (Cell.y == height - 1)
+		{
+			angle = CalcAngle(0.75f, 1.0f);
+			newPos = { oldPos.x + radius * cos(angle), oldPos.y + radius * sin(angle) };
+		}
+		else
+		{
+			angle = CalcAngle(0.5f, 1.0f);
+			newPos = { oldPos.x + radius * cos(angle), oldPos.y + radius * sin(angle) };
+		}
+	}
+
+	else if(Cell.y == 0)
+	{
+		angle = CalcAngle(0.25f, 0.75f);
+		newPos = { oldPos.x + radius * cos(angle), oldPos.y + radius * sin(angle) };
+	}
+
+	else if (Cell.y == height - 1)
+	{
+		angle = CalcAngle(0.75f, 1.25f);
+		newPos = { oldPos.x + radius * cos(angle), oldPos.y + radius * sin(angle) };
+	}
+
+	else
+	{
+		angle = CalcAngle(0.0f, 1.0f);
+		while (newPos.x < TopLeft.x || newPos.y < TopLeft.y
+			|| newPos.x > TopLeft.x + width * CellSize
+			|| newPos.y > TopLeft.y + width * CellSize)
+		{
+			newPos = { oldPos.x + radius * cos(angle), oldPos.y + radius * sin(angle) };
+		}
+	}
+
+	return newPos;
 }
 
-Vec2 Disc::PosToGrid(const Vec2 & Pos)
+Vei2 Disc::PosToGrid(const Vec2 & Pos)
 {
-		Vec2 GridPos = { Pos.x / CellSize,
-					     Pos.y / CellSize };
+	Vei2 GridPos = { 0,0 };
+	GridPos.x = int(Pos.x / CellSize);
+	GridPos.y = int(Pos.y / CellSize);
 
 	return GridPos;
+}
+
+void Disc::DrawGrid()
+{
+	for (GridPos.y = 0; GridPos.y < width; GridPos.y++)
+	{
+		for (GridPos.x = 0; GridPos.x < width; GridPos.x++)
+		{
+			AtTile(GridPos).drawCell(GridPos, gfx, TopLeft);
+			AtTile(GridPos).drawPoint(gfx, TopLeft);
+		}
+	}
+}
+
+int Disc::GetMinDisc()
+{
+	return minDist;
+}
+
+float Disc::CalcAngle(float x, float y)
+{
+	std::random_device rd;
+	std::mt19937 rng(rd());
+	std::uniform_real_distribution<float> Dist(x, y);
+
+	float angle = Dist(rng);
+
+	return angle;
 }
 
 
@@ -89,11 +219,24 @@ bool Disc::Tile::containsPoint()
 
 const Vec2& Disc::Tile::GetPoint() const
 {
-	return pointAt;
+	return Pos;
 }
 
 Vec2 & Disc::Tile::SetPoint(const Vec2& point)
 {
 	hasPoint = true;
-	return pointAt = point;
+	return Pos = point;
+}
+
+void Disc::Tile::drawCell(const Vei2& gridPos, Graphics& gfx, const Vei2& offset)
+{
+	gfx.DrawBoxDim(int(offset.x + gridPos.x * CellSize), int(offset.y + gridPos.y * CellSize), int(CellSize), int(CellSize), Colors::Blue);
+}
+
+void Disc::Tile::drawPoint(Graphics & gfx, const Vei2& offset)
+{
+	if (hasPoint == true)
+	{
+		gfx.DrawCircleWithPoint(int(offset.x + Pos.x), int(offset.y + Pos.y), 3, Colors::Gray);
+	}
 }
