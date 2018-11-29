@@ -97,67 +97,16 @@ Vec2 Disc::GetNewPosition()
 	Vei2 Cell = PosToGrid(oldPos);
 	float radius = minDist * (1 + r1);
 	float angle;
+	float Attempts = 0;
 
-	if(Cell.x == 0)
-	{ 
-		if (Cell.y == 0)
-		{
-			angle = CalcAngle(0.25f, 0.5f);
-			newPos = { oldPos.x + radius * cos(angle), oldPos.y + radius * sin(angle) };
-		}
-		else if (Cell.y == height - 1)
-		{
-			angle = CalcAngle(0.0f, 0.25f);
-			newPos = { oldPos.x + radius * cos(angle), oldPos.y + radius * sin(angle) };
-		}
-		else
-		{
-			angle = CalcAngle(0.0f, 0.5f);
-			newPos = { oldPos.x + radius * cos(angle), oldPos.y + radius * sin(angle) };
-		}
-	}
-
-	else if (Cell.y == width - 1)
-	{
-		if (Cell.y == 0)
-		{
-			angle = CalcAngle(0.5f, 0.75f);
-			newPos = { oldPos.x + radius * cos(angle), oldPos.y + radius * sin(angle) };
-		}
-		else if (Cell.y == height - 1)
-		{
-			angle = CalcAngle(0.75f, 1.0f);
-			newPos = { oldPos.x + radius * cos(angle), oldPos.y + radius * sin(angle) };
-		}
-		else
-		{
-			angle = CalcAngle(0.5f, 1.0f);
-			newPos = { oldPos.x + radius * cos(angle), oldPos.y + radius * sin(angle) };
-		}
-	}
-
-	else if(Cell.y == 0)
-	{
-		angle = CalcAngle(0.25f, 0.75f);
-		newPos = { oldPos.x + radius * cos(angle), oldPos.y + radius * sin(angle) };
-	}
-
-	else if (Cell.y == height - 1)
-	{
-		angle = CalcAngle(0.75f, 1.25f);
-		newPos = { oldPos.x + radius * cos(angle), oldPos.y + radius * sin(angle) };
-	}
-
-	else
-	{
-		angle = CalcAngle(0.0f, 1.0f);
-		while (newPos.x < TopLeft.x || newPos.y < TopLeft.y
+		while ((newPos.x < TopLeft.x || newPos.y < TopLeft.y
 			|| newPos.x > TopLeft.x + width * CellSize
-			|| newPos.y > TopLeft.y + width * CellSize)
+			|| newPos.y > TopLeft.y + width * CellSize) || Attempts < 30)
 		{
+			angle = CalcAngle(0.0f, 360.0f);
 			newPos = { oldPos.x + radius * cos(angle), oldPos.y + radius * sin(angle) };
+			Attempts++;
 		}
-	}
 
 	return newPos;
 }
@@ -194,7 +143,8 @@ float Disc::CalcAngle(float x, float y)
 	std::mt19937 rng(rd());
 	std::uniform_real_distribution<float> Dist(x, y);
 
-	float angle = Dist(rng);
+	float rand = Dist(rng);
+	float angle = 2 * 3.1415f * rand * 0.0174533f;
 
 	return angle;
 }
