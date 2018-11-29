@@ -38,6 +38,7 @@ public:
 	void DrawGrid();
 	int GetMinDisc();
 	float CalcAngle(float x, float y);
+	bool GridFull();
 
 private:
 	static constexpr int width = 10;

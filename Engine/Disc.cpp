@@ -16,24 +16,29 @@ Disc::Disc(Graphics & gfx)
 void Disc::RunDiscSeperation()
 {
 	SetFirstPoint();
-	int Attempts = 0; // k
-	bool pointokay = false;
-	
-	while (pointokay == false && Attempts < 30)
+	int i = 0; // safety catch 
+	while (GridFull() == false && i < 1000)
 	{
-		Vec2 newpos = GetNewPosition();
-		Vei2 gridpos = PosToGrid(newpos);
-		pointokay = CheckNeighbourPoints(gridpos, newpos);
-		if (pointokay == true)
+		int Attempts = 0; // k
+		bool pointokay = false;
+
+		while (pointokay == false && Attempts < 50)
 		{
-			ActiveList.push_back(newpos);
-			AtTile(gridpos).SetPoint(newpos);
-			ActiveList.erase(ActiveList.end() - 1);
+			Vec2 newpos = GetNewPosition();
+			Vei2 gridpos = PosToGrid(newpos);
+			pointokay = CheckNeighbourPoints(gridpos, newpos);
+			if (pointokay == true)
+			{
+				ActiveList.push_back(newpos);
+				AtTile(gridpos).SetPoint(newpos);
+				ActiveList.erase(ActiveList.end() - 1);
+			}
+
+			Attempts++;
 		}
 
-		Attempts++;
+		i++;
 	}
-
 }
 
 void Disc::SetFirstPoint()
@@ -98,14 +103,14 @@ Vec2 Disc::GetNewPosition()
 	float r1 = xDist(rng);
 	int i = element(rng);
 	Vec2 oldPos = ActiveList[i];
-	Vec2 newPos = {0,0};
+	Vec2 newPos = {-1,-1};
 	Vei2 Cell = PosToGrid(oldPos);
 	float radius = minDist * (1 + r1);
 	float angle;
 
-		while ((newPos.x < TopLeft.x || newPos.y < TopLeft.y
-			|| newPos.x > TopLeft.x + width * CellSize
-			|| newPos.y > TopLeft.y + width * CellSize))
+		while ((newPos.x < 0 || newPos.y < 0
+			|| newPos.x > width * CellSize
+			|| newPos.y > height * CellSize))
 		{
 			angle = CalcAngle(0.0f, 360.0f);
 			newPos = { oldPos.x + radius * cos(angle), oldPos.y + radius * sin(angle) };
@@ -151,6 +156,23 @@ float Disc::CalcAngle(float x, float y)
 	float angle = 2 * 3.1415f * rand * 0.0174533f; // 1 deg = 0.0174533 Rad
 
 	return angle;
+}
+
+bool Disc::GridFull()
+{
+	for (int y = 0; y < height; y++)
+	{
+		for (int x = 0; x < width; x++)
+		{
+			bool HasPoint = AtTile({ x,y }).containsPoint();
+
+			if (HasPoint == false)
+			{
+				return false;
+			}
+		}
+	}
+	return true;
 }
 
 
