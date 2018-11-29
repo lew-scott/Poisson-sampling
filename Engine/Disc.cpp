@@ -22,7 +22,7 @@ void Disc::RunDiscSeperation()
 		int Attempts = 0; // k
 		bool pointokay = false;
 
-		while (pointokay == false && Attempts < 50)
+		while (pointokay == false && Attempts < k_tries)
 		{
 			Vec2 newpos = GetNewPosition();
 			Vei2 gridpos = PosToGrid(newpos);
@@ -31,7 +31,7 @@ void Disc::RunDiscSeperation()
 			{
 				ActiveList.push_back(newpos);
 				AtTile(gridpos).SetPoint(newpos);
-				ActiveList.erase(ActiveList.end() - 1);
+				ActiveList.erase(ActiveList.begin() + PointToBeDeleted);
 			}
 
 			Attempts++;
@@ -69,25 +69,18 @@ bool Disc::CheckNeighbourPoints(const Vei2 & GridPos, const Vec2& TempPos)
 	{
 		for (cell.x = xStart; cell.x <= xEnd; cell.x++)
 		{
-			if (GridPos.x == cell.x && GridPos.y == cell.y) // check not cell being checked
-			{
-
-			}
-			else
+			if (GridPos.x != cell.x && GridPos.y != cell.y) // check not cell being checked
 			{
 				if (AtTile({ cell.x,cell.y }).containsPoint() == true)
 				{
-					
 					Vec2 TestLenght = AtTile({ cell.x, cell.y }).GetPoint() - TempPos;
 					
 					if (TestLenght.GetLengthSq() < minDist * minDist)
 					{
 						PointOkay = false;
 					}
-
 				}
 			}
-			
 		}
 	}
 	return PointOkay;
@@ -102,6 +95,7 @@ Vec2 Disc::GetNewPosition()
 
 	float r1 = xDist(rng);
 	int i = element(rng);
+	PointToBeDeleted = i;
 	Vec2 oldPos = ActiveList[i];
 	Vec2 newPos = {-1,-1};
 	Vei2 Cell = PosToGrid(oldPos);
@@ -206,13 +200,13 @@ Vec2 & Disc::Tile::SetPoint(const Vec2& point)
 
 void Disc::Tile::drawCell(const Vei2& gridPos, Graphics& gfx, const Vei2& offset)
 {
-	gfx.DrawBoxDim(int(offset.x + gridPos.x * CellSize), int(offset.y + gridPos.y * CellSize), int(CellSize), int(CellSize), Colors::Blue);
+	gfx.DrawBoxDim(int(offset.x + gridPos.x * CellSize), int(offset.y + gridPos.y * CellSize), int(CellSize), int(CellSize), Colors::LightGray);
 }
 
 void Disc::Tile::drawPoint(Graphics & gfx, const Vei2& offset)
 {
 	if (hasPoint == true)
 	{
-		gfx.DrawCircleWithPoint(int(offset.x + Pos.x), int(offset.y + Pos.y), 2, Colors::Gray);
+		gfx.DrawCircleWithPoint(int(offset.x + Pos.x), int(offset.y + Pos.y), 4, Colors::Gray);
 	}
 }

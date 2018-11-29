@@ -41,11 +41,12 @@ public:
 	bool GridFull();
 
 private:
-	static constexpr int width = 10;
-	static constexpr int height = 10;
-	static constexpr int minDist = 50;
+	static constexpr int width = 20;
+	static constexpr int height = 20;
+	static constexpr int minDist = 30;
 	static constexpr int newPoints = 10;
 	static constexpr int k_tries = 30;
+	int PointToBeDeleted = -1;
 	float CellSize = minDist/float(sqrt(2));
 	Tile field[width * height];
 	const Tile& AtTile(const Vei2& gridPos) const;

@@ -298,7 +298,7 @@ void Graphics::DrawCircleWithPoint(int x, int y, int radius, Color c)
 		{
 			const int x_diff = x - x_loop;
 			const int y_diff = y - y_loop;
-			if (x_diff * x_diff + y_diff * y_diff <= rad_sq)
+			if (x_diff * x_diff + y_diff * y_diff <= rad_sq && x_diff * x_diff + y_diff * y_diff >= radius * 2)
 			{
 				PutPixel(x_loop, y_loop, c);
 			}
