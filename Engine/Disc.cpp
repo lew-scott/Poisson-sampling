@@ -106,9 +106,8 @@ Vec2 Disc::GetNewPosition()
 			|| newPos.x > width * CellSize
 			|| newPos.y > height * CellSize))
 		{
-			angle = CalcAngle(0.0f, 360.0f);
+			angle = CalcAngle(0.0f, 360.0f); // returns in rads, not degrees
 			newPos = { oldPos.x + radius * cos(angle), oldPos.y + radius * sin(angle) };
-			
 		}
 
 	return newPos;
