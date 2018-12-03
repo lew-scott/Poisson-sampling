@@ -33,7 +33,7 @@ public:
 	void RunDiscSeperation();
 	void SetFirstPoint();
 	bool CheckNeighbourPoints(const Vei2& GridPos, const Vec2& TempPos);
-	Vec2 GetNewPosition();
+	void GetNewPosition();
 	Vei2 PosToGrid(const Vec2& Pos);
 	void DrawGrid();
 	int GetMinDisc();

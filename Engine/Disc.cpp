@@ -17,28 +17,8 @@ void Disc::RunDiscSeperation()
 {
 	SetFirstPoint();
 	int i = 0; // safety catch 
-	while (GridFull() == false && i < 1000)
-	{
-		int Attempts = 0; // k
-		bool pointokay = false;
-
-		while (pointokay == false && Attempts < k_tries)
-		{
-			Vec2 newpos = GetNewPosition();
-			Vei2 gridpos = PosToGrid(newpos);
-			pointokay = CheckNeighbourPoints(gridpos, newpos);
-			if (pointokay == true)
-			{
-				ActiveList.push_back(newpos);
-				AtTile(gridpos).SetPoint(newpos);
-				ActiveList.erase(ActiveList.begin() + PointToBeDeleted);
-			}
-
-			Attempts++;
-		}
-
-		i++;
-	}
+	GetNewPosition();
+	
 }
 
 void Disc::SetFirstPoint()
@@ -86,31 +66,72 @@ bool Disc::CheckNeighbourPoints(const Vei2 & GridPos, const Vec2& TempPos)
 	return PointOkay;
 }
 
-Vec2 Disc::GetNewPosition()
+void Disc::GetNewPosition()
 {
 	std::random_device rd;
 	std::mt19937 rng(rd());
 	std::uniform_real_distribution<float> xDist(0, 1);
 	std::uniform_int_distribution<int> element(0, int(ActiveList.size() - 1));
 
-	float r1 = xDist(rng);
+	
 	int i = element(rng);
 	PointToBeDeleted = i;
 	Vec2 oldPos = ActiveList[i];
 	Vec2 newPos = {-1,-1};
 	Vei2 Cell = PosToGrid(oldPos);
-	float radius = minDist * (1 + r1);
+	
 	float angle;
+	bool PointOkay = true;
+	int k = 0;
 
-		while ((newPos.x < 0 || newPos.y < 0
-			|| newPos.x > width * CellSize
-			|| newPos.y > height * CellSize))
+	while ((newPos.x < 0 || newPos.y < 0
+		|| newPos.x > width * CellSize
+		|| newPos.y > height * CellSize || k < k_tries))
+	{
+		angle = CalcAngle(0.0f, 360.0f); // returns in rads, not degrees
+		float r1 = xDist(rng);
+		float radius = minDist * (1 + r1);
+		newPos = { oldPos.x + radius * cos(angle), oldPos.y + radius * sin(angle) };
+
+		GridPos = PosToGrid(newPos);
+		if (AtTile(GridPos).containsPoint() == false)
 		{
-			angle = CalcAngle(0.0f, 360.0f); // returns in rads, not degrees
-			newPos = { oldPos.x + radius * cos(angle), oldPos.y + radius * sin(angle) };
+
+			const int xStart = std::max(0, GridPos.x - 1);
+			const int yStart = std::max(0, GridPos.y - 1);
+			const int xEnd = std::min(width - 1, GridPos.x + 1);
+			const int yEnd = std::min(height - 1, GridPos.y + 1);
+
+			bool PointOkay = true;
+
+			for (Vei2 cell = { xStart,yStart }; cell.y <= yEnd; cell.y++)
+			{
+				for (cell.x = xStart; cell.x <= xEnd; cell.x++)
+				{
+					if (GridPos.x != cell.x && GridPos.y != cell.y) // check not cell being checked
+					{
+						if (AtTile({ cell }).containsPoint() == true)
+						{
+							Vec2 TestLenght = AtTile({ cell.x, cell.y }).GetPoint() - newPos;
+
+							if (TestLenght.GetLength() <= minDist)
+							{
+								PointOkay = false;
+							}
+						}
+					}
+				}
+			}
 		}
 
-	return newPos;
+	if(PointOkay == true)
+	{
+		ActiveList.push_back(newPos);
+		AtTile(GridPos).SetPoint(newPos);
+		ActiveList.erase(ActiveList.begin() + PointToBeDeleted);
+	}
+		k++;
+	}
 }
 
 Vei2 Disc::PosToGrid(const Vec2 & Pos)
@@ -207,6 +228,6 @@ void Disc::Tile::drawPoint(Graphics & gfx, const Vei2& offset)
 	if (hasPoint == true)
 	{
 
-		gfx.DrawCircleWithPoint(int(offset.x + Pos.x), int(offset.y + Pos.y), 4, { 200,0,200 });
+		gfx.DrawCircleWithPoint(int(offset.x + Pos.x), int(offset.y + Pos.y), 18, { 200,0,200 });
 	}
 }
