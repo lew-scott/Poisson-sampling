@@ -15,13 +15,15 @@ class Disc
 		Tile() = default;
 		bool containsPoint();
 		const Vec2& GetPoint() const;
-		Vec2& SetPoint(const Vec2& point);
+		void SetPoint(const Vec2& point);
+		void SetState(bool state);
 		void drawCell(const Vei2& gridPos, Graphics& gfx, const Vei2& offset);
 		void drawPoint(Graphics& gfx, const Vei2& offset);
 
 	private:
 		float CellSize = minDist / float(sqrt(2));
 		bool hasPoint = false;
+		bool Active = true;
 		Vec2 pointAt;
 		Vec2 Pos;
 		
@@ -30,23 +32,22 @@ public:
 	Disc(Graphics& gfx);
 
 public:
-	void RunDiscSeperation();
 	void SetFirstPoint();
-	bool CheckNeighbourPoints(const Vei2& GridPos, const Vec2& TempPos);
 	void GetNewPosition();
 	Vei2 PosToGrid(const Vec2& Pos);
 	void DrawGrid();
 	int GetMinDisc();
+
 	float CalcAngle(float x, float y);
 	bool GridFull();
 
 private:
-	static constexpr int width = 24;
-	static constexpr int height = 18;
-	static constexpr int minDist = 40;
-	static constexpr int newPoints = 10;
-	static constexpr int k_tries = 30;
+	static constexpr int width = 48;
+	static constexpr int height = 36;
+	static constexpr int minDist = 20;
+	static constexpr int k_tries = 100;
 	int PointToBeDeleted = -1;
+
 	float CellSize = minDist/float(sqrt(2));
 	Tile field[width * height];
 	const Tile& AtTile(const Vei2& gridPos) const;

@@ -42,9 +42,19 @@ void Game::UpdateModel()
 {
 	if (setpoint == false)
 	{
-		disc.RunDiscSeperation();
+		disc.SetFirstPoint();
+		disc.GetNewPosition();
 		setpoint = true;
 	}
+
+
+
+	if(count < countMax)
+	{
+		disc.GetNewPosition();
+		count++;
+	}
+	
 }
 
 void Game::ComposeFrame()

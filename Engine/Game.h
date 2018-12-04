@@ -45,5 +45,7 @@ private:
 	/*  User Variables              */
 	Disc disc;
 	bool setpoint = false;
+	int count = 0;
+	int countMax = 1000;
 	/********************************/
 };
