@@ -22,6 +22,7 @@
 #include "Game.h"
 
 
+
 Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
@@ -48,13 +49,19 @@ void Game::UpdateModel()
 	}
 
 
-
-	if(count < countMax)
+	for (int i = 0; i < 20; i++)
 	{
-		disc.GetNewPosition();
-		count++;
+		if (count < countMax)
+		{
+			disc.GetNewPosition();
+			count++;
+		}
 	}
 	
+
+
+	std::sort(v.begin(), v.end(), [](auto &left, auto &right)
+	{return left.y < right.y;  });
 }
 
 void Game::ComposeFrame()

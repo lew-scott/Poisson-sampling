@@ -24,6 +24,8 @@
 #include "Mouse.h"
 #include "Graphics.h"
 #include "Disc.h"
+#include <vector>
+#include <execution>
 
 class Game
 {
@@ -44,6 +46,7 @@ private:
 	/********************************/
 	/*  User Variables              */
 	Disc disc;
+	std::vector<Vec2> v;
 	bool setpoint = false;
 	int count = 0;
 	int countMax = 1000;
