@@ -45,7 +45,8 @@ private:
 	static constexpr int width = 48;
 	static constexpr int height = 36;
 	static constexpr int minDist = 20;
-	static constexpr int k_tries = 100;
+	// alter k-tries to increase or decrease total number of point on the grid
+	static constexpr int k_tries = 50;
 	int PointToBeDeleted = -1;
 
 	float CellSize = minDist/float(sqrt(2));

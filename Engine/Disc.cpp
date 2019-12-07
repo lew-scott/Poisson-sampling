@@ -45,10 +45,11 @@ void Disc::GetNewPosition()
 		int PointsAdded = 0;
 		int k = 0;
 
+		// attempts made to place a new disc
 		while (k < k_tries)
 		{
 
-			angle = CalcAngle(0.0f, 360.0f); // returns in rads, not degrees
+			angle = CalcAngle(0.0f, 360.0f); // returns in rads, not degree
 			float r1 = xDist(rng);
 			float radius = minDist * (1 + r1);
 			newPos = { oldPos.x + radius * cos(angle), oldPos.y + radius * sin(angle) };
@@ -111,7 +112,7 @@ void Disc::GetNewPosition()
 		}
 	}
 }
-
+// screen to grid position
 Vei2 Disc::PosToGrid(const Vec2 & Pos)
 {
 	Vei2 GridPos = { 0,0 };
@@ -121,6 +122,7 @@ Vei2 Disc::PosToGrid(const Vec2 & Pos)
 	return GridPos;
 }
 
+// drawing fuctions
 void Disc::DrawGrid()
 {
 	for (GridPos.y = 0; GridPos.y < height; GridPos.y++)
