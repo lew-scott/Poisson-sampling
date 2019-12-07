@@ -213,11 +213,11 @@ void Disc::Tile::drawPoint(Graphics & gfx, const Vei2& offset)
 	{
 		if (Active == true)
 		{
-			gfx.DrawCircleWithPoint(int(offset.x + Pos.x), int(offset.y + Pos.y), 4, {50,155,50 });
+			gfx.DrawCircleWithPoint(int(offset.x + Pos.x), int(offset.y + Pos.y), 8, {50,155,50 });
 		}
 		else
 		{
-			gfx.DrawCircleWithPoint(int(offset.x + Pos.x), int(offset.y + Pos.y), 4, { 0,0,255 });
+			gfx.DrawCircleWithPoint(int(offset.x + Pos.x), int(offset.y + Pos.y), 8, { 0,0,255 });
 		}
 	}
 }

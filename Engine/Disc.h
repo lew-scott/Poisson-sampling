@@ -45,7 +45,7 @@ private:
 	static constexpr int width = 48;
 	static constexpr int height = 36;
 	static constexpr int minDist = 20;
-	static constexpr int k_tries = 10;
+	static constexpr int k_tries = 100;
 	int PointToBeDeleted = -1;
 
 	float CellSize = minDist/float(sqrt(2));

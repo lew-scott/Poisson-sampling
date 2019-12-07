@@ -49,23 +49,19 @@ void Game::UpdateModel()
 	}
 
 
-	for (int i = 0; i < 20; i++)
+	for (int i = 0; i < 5; i++) // looks at 5 new positions every iteration
 	{
-		if (count < countMax)
-		{
 			disc.GetNewPosition();
 			count++;
-		}
 	}
 	
+	Sleep(200);
+	
 
-
-	std::sort(v.begin(), v.end(), [](auto &left, auto &right)
-	{return left.y < right.y;  });
 }
 
 void Game::ComposeFrame()
 {
 	disc.DrawGrid();
-	gfx.DrawRectCentered(400, 580, disc.GetMinDisc(), 5, Colors::Blue);
+	//gfx.DrawRectCentered(400, 580, disc.GetMinDisc(), 5, Colors::Blue);
 }

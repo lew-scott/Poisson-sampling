@@ -49,6 +49,6 @@ private:
 	std::vector<Vec2> v;
 	bool setpoint = false;
 	int count = 0;
-	int countMax = 1000;
+	int countMax = 100;
 	/********************************/
 };
